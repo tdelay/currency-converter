@@ -1,0 +1,11 @@
+<label for="currencyFrom-input">Add an item:</label>
+<input type="text" id="currencyFrom-input" #currencyFrom>
+<button type="button" (click)="addItem(currencyFrom.value)">Add to parent's list</button>
+
+<label for="currencyTo-input">Add an item:</label>
+<input type="text" id="currencyFrom-input" #currencyTo>
+<button type="button" (click)="addItem(currencyTo.value)">Add to other list</button>
+
+<ul>
+    <li *ngFor="let item of items">{{item}}</li>
+  </ul>
