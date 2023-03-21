@@ -8,12 +8,14 @@ import { ConverterFormComponent } from './converter-form/converter-form.componen
 import { ConvertionHistoryComponent } from './convertion-history/convertion-history.component';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
+import { NumbersOnly } from './numbers-only.directive';
 
 @NgModule({
   declarations: [
     ConverterFormComponent,
     ConvertionHistoryComponent,
-    AppComponent
+    AppComponent,
+    NumbersOnly
   ],
   imports: [
     BrowserModule,

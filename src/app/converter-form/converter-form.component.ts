@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { ConfigService } from '../config.service';
+import { ConvertHistoryService } from '../convert-history.service';
 import { LoadCurrenciesService } from '../load-currencies.service';
 
 @Component({
@@ -7,38 +9,50 @@ import { LoadCurrenciesService } from '../load-currencies.service';
   templateUrl: './converter-form.component.html',
   styleUrls: ['./converter-form.component.less']
 })
+
 export class ConverterFormComponent implements OnInit, OnDestroy {
-  convertFrom: number = 1;
-  convertTo: number = 1;
+
+  xmlItems: any[] = [{ currency: 'EUR', rate: 1 }];
+
+  convertFrom: {currency: string; rate: number} = this.xmlItems[0];
+  convertTo: {currency: string; rate: number} = this.xmlItems[0];
+
   convertAmountFromVal: number = 0;
   convertAmountToVal: number = 0;
-  convertedAmountFromVal: number = 0;
-  convertedAmountToVal: number = 0;
-  xmlItems: any[] = [{ currency: 'EUR', rate: 1 }];
+  
   subscription!: Subscription;
 
-  constructor(private loadCurrencies: LoadCurrenciesService) { }
+  constructor(
+    private loadCurrencies: LoadCurrenciesService,
+    private historyService: ConvertHistoryService
+  ) { }
 
   convertAmountFromBlur($event: any): void {
     this.convertAmountFromVal = $event.target.value || 0;
-    this.calculateToResult(this.convertAmountFromVal);
+    this.calculateToResult($event.target.value || 0);
   };
 
   convertAmountToBlur($event: any): void {
     this.convertAmountToVal = $event.target.value || 0;
-    this.calculateFromResult(this.convertAmountToVal);
+    this.calculateFromResult($event.target.value || 0);
   };
 
   calculateFromResult(val: number) {
-    this.convertedAmountToVal = val * this.convertTo;
-    this.convertedAmountFromVal = this.convertedAmountToVal / this.convertFrom;
-    this.convertAmountFromVal = this.convertedAmountFromVal;
+    const convertedAmountToVal = val / this.convertTo.rate;
+    this.convertAmountFromVal = convertedAmountToVal * this.convertFrom.rate;
+    this.logResults();
   }
 
   calculateToResult(val: number) {
-    this.convertedAmountFromVal = val * this.convertFrom;
-    this.convertedAmountToVal = this.convertedAmountFromVal / this.convertTo;
-    this.convertAmountToVal = this.convertedAmountToVal;
+    const convertedAmountFromVal = val / this.convertFrom.rate;
+    this.convertAmountToVal = convertedAmountFromVal * this.convertTo.rate;
+    this.logResults();
+  }
+
+  logResults(): void {
+    if (this.convertAmountFromVal !== 0 && this.convertAmountToVal !== 0) {
+      this.historyService.setMessages(`${this.convertAmountFromVal} ${this.convertFrom.currency} converted to ${this.convertAmountToVal} ${this.convertTo.currency}`);
+    }
   }
 
   ngOnInit(): void {
