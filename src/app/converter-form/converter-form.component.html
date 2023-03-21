@@ -12,4 +12,9 @@
   </mat-option>
 </mat-select>
 
+<input matInput type="number" (blur)="convertAmountFromBlur($event)" #convertAmountFrom [value]="convertAmountFromVal" placeholder="Convert Amount From">
+<input matInput type="number" (blur)="convertAmountToBlur($event)" #convertAmountTo [value]="convertAmountToVal" placeholder="Convert Amount To">
+
 <p>{{convertFrom}} => {{convertTo}}</p>
+<p>{{convertAmountFromVal}} => {{convertAmountToVal}}</p>
+<p>{{convertedAmountFromVal}} => {{convertedAmountToVal}}</p>

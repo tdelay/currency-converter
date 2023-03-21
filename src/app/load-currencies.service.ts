@@ -1,63 +1,33 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import * as xml2js from 'xml2js';
+import { map } from 'rxjs';
+import { xml2js } from 'xml-js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoadCurrenciesService {
-  private xmlItems: any;
 
-  constructor(private http:HttpClient) {
-    this.loadXML();
-  }
+  constructor(private http:HttpClient) {}
 
-  //getting data function
-private loadXML() {
-  /*Read Data*/
-  this.http.get('assets/eurofxref-daily.xml',
-  {
-    headers: new HttpHeaders()
-      .set('Content-Type', 'text/xml')
-      .append('Access-Control-Allow-Methods', 'GET')
-      .append('Access-Control-Allow-Origin', '*')
-      .append('Access-Control-Allow-Headers', "Access-Control-Allow-Headers, Access-Control-Allow-Origin, Access-Control-Request-Method"),
-    responseType: 'text'
-  })
-  .subscribe((data) => {
-    this.parseXML(data)
-      .then((data) => {
-        this.xmlItems = data;
-      });
-  });
-  /*Read Data*/
-}
-// store xml data into array variable
-private parseXML(data: string) {
-    return new Promise(resolve => {
-      var k: string | number,
-        arr : any[] = [],
-        parser = new xml2js.Parser(
-          {
-            trim: true,
-            explicitArray: true
-          });
-      parser.parseString(data, function (err: any, result: { 'gesmes:Envelope': any; }) {
-        var obj = result['gesmes:Envelope'].Cube[0].Cube[0];
-        for (k in obj.Cube) {
+  public getXmlData() {
+    const url = 'assets/eurofxref-daily.xml';
+    return this.http.get(url, { responseType: 'text' }).pipe(
+      map((xmlData: string) => {
+        const json: { [key: string]: any } = xml2js(xmlData, { compact: true });
+        const arr = [];
+        const obj = json['gesmes:Envelope'].Cube.Cube;
+        for (let k in obj.Cube) {
           var item = obj.Cube[k];
+
           arr.push({
-            currency: item.$.currency,
-            rate: item.$.rate
+            currency: item._attributes.currency,
+            rate: item._attributes.rate
           });
         }
-        resolve(arr);
-      });
-    });
-  }
 
-getCurrencyXmlData() : Observable<any[]> {
-    return of(this.xmlItems);
+        return arr;
+      })
+    );
   }
 }
