@@ -21,15 +21,25 @@ export class ConverterFormComponent implements OnInit, OnDestroy {
 
   convertAmountFromBlur($event: any): void {
     this.convertAmountFromVal = $event.target.value || 0;
-    this.convertedAmountFromVal = this.convertAmountFromVal * this.convertFrom;
-    this.convertedAmountToVal = this.convertedAmountFromVal / this.convertTo;
+    this.calculateToResult(this.convertAmountFromVal);
   };
 
   convertAmountToBlur($event: any): void {
     this.convertAmountToVal = $event.target.value || 0;
-    this.convertedAmountToVal = this.convertAmountToVal * this.convertTo;
-    this.convertedAmountFromVal = this.convertedAmountToVal / this.convertFrom;
+    this.calculateFromResult(this.convertAmountToVal);
   };
+
+  calculateFromResult(val: number) {
+    this.convertedAmountToVal = val * this.convertTo;
+    this.convertedAmountFromVal = this.convertedAmountToVal / this.convertFrom;
+    this.convertAmountFromVal = this.convertedAmountFromVal;
+  }
+
+  calculateToResult(val: number) {
+    this.convertedAmountFromVal = val * this.convertFrom;
+    this.convertedAmountToVal = this.convertedAmountFromVal / this.convertTo;
+    this.convertAmountToVal = this.convertedAmountToVal;
+  }
 
   ngOnInit(): void {
     this.subscription = this.loadCurrencies.getXmlData().subscribe(

@@ -1,19 +1,25 @@
-<label for="currencyFrom-input">Convert From:</label>
-<mat-select placeholder="Currency From" [(value)]="convertFrom" name="convertFrom">
-  <mat-option *ngFor="let currency of xmlItems" [value]="currency.rate">
-    {{currency.currency}}
-  </mat-option>
-</mat-select>
+<div class="converter-grid">
+  <div class="converter-grid-item">
+    <label for="currencyFrom-input">Convert From:</label>
+    <mat-select placeholder="Currency From" [(value)]="convertFrom" name="convertFrom" (selectionChange)="calculateToResult(convertAmountFromVal)">
+      <mat-option *ngFor="let currency of xmlItems" [value]="currency.rate">
+        {{currency.currency}}
+      </mat-option>
+    </mat-select>
+    <input matInput type="number" (blur)="convertAmountFromBlur($event)" #convertAmountFrom [value]="convertAmountFromVal" placeholder="Convert Amount From">
+  </div>
+  
+  <div class="converter-grid-item">
+    <label for="currencyTo-input">Convert To:</label>
+    <mat-select placeholder="Currency To" [(value)]="convertTo" name="convertTo" (selectionChange)="calculateFromResult(convertAmountToVal)">
+      <mat-option *ngFor="let currency of xmlItems" [value]="currency.rate">
+        {{currency.currency}}
+      </mat-option>
+    </mat-select>
+    <input matInput type="number" (blur)="convertAmountToBlur($event)" #convertAmountTo [value]="convertAmountToVal" placeholder="Convert Amount To">
+  </div>
+</div>
 
-<label for="currencyTo-input">Convert To:</label>
-<mat-select placeholder="Currency To" [(value)]="convertTo" name="convertTo">
-  <mat-option *ngFor="let currency of xmlItems" [value]="currency.rate">
-    {{currency.currency}}
-  </mat-option>
-</mat-select>
-
-<input matInput type="number" (blur)="convertAmountFromBlur($event)" #convertAmountFrom [value]="convertAmountFromVal" placeholder="Convert Amount From">
-<input matInput type="number" (blur)="convertAmountToBlur($event)" #convertAmountTo [value]="convertAmountToVal" placeholder="Convert Amount To">
 
 <p>{{convertFrom}} => {{convertTo}}</p>
 <p>{{convertAmountFromVal}} => {{convertAmountToVal}}</p>
