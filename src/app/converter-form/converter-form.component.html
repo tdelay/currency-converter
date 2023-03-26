@@ -1,0 +1,37 @@
+<div class="converter-grid">
+  <div class="converter-grid-item">
+    <label for="currencyFrom-input">Convert From:</label>
+    <mat-select [(value)]="convertFrom" name="convertFrom" (selectionChange)="calculateToResult(convertAmountFromVal)">
+      <mat-option *ngFor="let currency of xmlItems" [value]="currency">
+        {{currency.currency}}
+      </mat-option>
+    </mat-select>
+    <input 
+      matInput 
+      type="text" 
+      (blur)="convertAmountFromBlur($event)" 
+      #convertAmountFrom 
+      [value]="convertAmountFromVal" 
+      placeholder="Convert Amount From"
+      numbersOnly />
+  </div>
+
+  <div class="two-way-arrow" (click)="calculateToResult(convertAmountFromVal)"></div>
+
+  <div class="converter-grid-item">
+    <label for="currencyTo-input">Convert To:</label>
+    <mat-select [(value)]="convertTo" name="convertTo" (selectionChange)="calculateFromResult(convertAmountToVal)">
+      <mat-option *ngFor="let currency of xmlItems" [value]="currency">
+        {{currency.currency}}
+      </mat-option>
+    </mat-select>
+    <input 
+      matInput
+      type="text"
+      (blur)="convertAmountToBlur($event)"
+      #convertAmountTo
+      [value]="convertAmountToVal"
+      placeholder="Convert Amount To"
+      numbersOnly />
+  </div>
+</div>
