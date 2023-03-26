@@ -1,0 +1,9 @@
+<mat-selection-list #currencies>
+    <mat-list-option *ngFor="let currency of typesOfCurrencies">
+      {{currency}}
+    </mat-list-option>
+  </mat-selection-list>
+  
+  <p>
+    Options selected: {{currencies.selectedOptions.selected}} {{currencies.selectedOptions.selected.length}}
+  </p>
